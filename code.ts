@@ -18,7 +18,7 @@ figma.ui.onmessage = (msg) => {
         return;
       }
 
-      const matches: string[] = [];
+      const matches: { propName: string; componentName: string }[] = [];
       const nodes = figma.root.findAllWithCriteria({ types: ["COMPONENT", "COMPONENT_SET"] });
 
       if (nodes.length === 0) {
@@ -35,7 +35,7 @@ figma.ui.onmessage = (msg) => {
           if (node.componentPropertyDefinitions) {
             for (const key of Object.keys(node.componentPropertyDefinitions)) {
               if (key.toLowerCase().includes(query)) {
-                matches.push(key);
+                matches.push({ propName: key, componentName: node.name });
               }
             }
           }

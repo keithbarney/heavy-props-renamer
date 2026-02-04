@@ -1,11 +1,14 @@
 {
   "name": "Heavy Props Renamer",
-  "id": "1487553215664919333",
+  "id": "6037143007635277875",
   "api": "1.0.0",
-  "main": "code.js",
-  "ui": "ui.html",
+  "main": "dist/code.js",
   "capabilities": [],
   "enableProposedApi": false,
   "editorType": ["figma"],
-  "documentAccess": "dynamic-page"
+  "ui": "ui.html",
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
 }

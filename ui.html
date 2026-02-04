@@ -201,7 +201,7 @@
 
         for (const match of msg.results) {
           const li = document.createElement('li');
-          li.textContent = match;
+          li.textContent = `${match.propName} — ${match.componentName}`;
           matchList.appendChild(li);
         }
       }
