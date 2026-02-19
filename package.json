@@ -1,6 +1,6 @@
 {
   "name": "heavy-props-renamer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Figma plugin to search for component property names",
   "scripts": {
     "dev": "esbuild code.ts --bundle --target=es6 --outfile=dist/code.js --watch",

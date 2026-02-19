@@ -269,13 +269,50 @@ input[type="text"]:focus {
   text-underline-offset: 2px;
 }
 
-.result-component {
+.result-meta {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin-top: 1px;
+}
+
+.result-page {
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+/* Inline focus button */
+.btn-focus {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: var(--radius);
+  opacity: 0;
+  transition: opacity var(--transition), background var(--transition), color var(--transition);
+}
+
+.result-item:hover .btn-focus {
+  opacity: 1;
+}
+
+.btn-focus:hover:not(:disabled) {
+  background: var(--color-surface-alt);
+  color: var(--color-text-strong);
+}
+
+.btn-focus svg {
+  width: 11px;
+  height: 11px;
+  stroke: currentColor;
+  stroke-width: 1.8;
 }
 
 .type-badge {
@@ -559,18 +596,38 @@ button svg {
       const item = document.createElement('div');
       item.className = 'result-item';
 
+      const showPage = results.some(x => x.pageName !== results[0].pageName);
       item.innerHTML = `
         <input type="checkbox" class="row-cb" data-idx="${i}" checked>
         <div class="result-body">
           <div class="result-prop">${highlightMatch(r.displayName, query)}</div>
-          <div class="result-component">${escHtml(r.componentName)}</div>
+          <div class="result-meta">${escHtml(r.componentName)}${showPage ? ` <span class="result-page">· ${escHtml(r.pageName)}</span>` : ''}</div>
         </div>
         <span class="type-badge type-${r.propType}">${typeLabel(r.propType)}</span>
+        <button class="btn-focus" data-node-id="${escHtml(r.nodeId)}" data-page-id="${escHtml(r.pageId)}" title="Focus in canvas" tabindex="-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M3 12h2M19 12h2M12 3v2M12 19v2"/>
+          </svg>
+        </button>
       `;
+
+      // Navigate button
+      item.querySelector('.btn-focus').addEventListener('click', (e) => {
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        parent.postMessage({
+          pluginMessage: {
+            type: 'navigate-to-node',
+            nodeId: btn.dataset.nodeId,
+            pageId: btn.dataset.pageId,
+          }
+        }, '*');
+      });
 
       // Click row to toggle
       item.addEventListener('click', (e) => {
-        if (e.target.type === 'checkbox') return;
+        if (e.target.type === 'checkbox' || e.target.closest('.btn-focus')) return;
         const cb = item.querySelector('.row-cb');
         cb.checked = !cb.checked;
         syncSelectAll();
@@ -651,6 +708,7 @@ button svg {
       );
       return {
         nodeId: r.nodeId,
+        pageId: r.pageId,
         propKey: r.propKey,
         newName: newDisplayName,
       };

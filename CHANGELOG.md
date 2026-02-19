@@ -7,6 +7,19 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ---
 
+## [1.1.0] — 2026-02-19
+
+### Fixed
+
+- **Multi-page search** — plugin now correctly searches components across all pages in the file. Previously, `figma.root.findAllWithCriteria` was called without explicitly loading non-current pages (Figma `dynamic-page` access model requires `loadPageAsync` for pages not currently open). Components on other pages were silently skipped.
+
+### Added
+
+- **Page name in results** — when a file has components on multiple pages, each result row shows the page name (e.g. `Button · 🗂 Components`) so you know exactly where each match lives.
+- **Navigate to component** — each result row now has a crosshair focus button. Click it to jump directly to that component on the canvas (switches page if needed and scrolls/zooms into view).
+
+---
+
 ## [1.0.0] — 2026-02-18
 
 ### Added
