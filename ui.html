@@ -1,230 +1,713 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+<meta charset="UTF-8">
+<style>
+/* ============================================================
+   HEAVY THEME — Spacegray / Base16 Ocean
+   ============================================================ */
 
-    body {
-      font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 12px;
-      color: #333;
-      background: #fff;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
+:root {
+  --color-bg:               #2b303b;
+  --color-surface:          #343d46;
+  --color-surface-alt:      #3b4350;
+  --color-border:           #4f5b66;
+  --color-border-focus:     #65737e;
 
-    .header {
-      margin-bottom: 16px;
-    }
+  --color-text:             #c0c5ce;
+  --color-text-strong:      #eff1f5;
+  --color-text-muted:       #65737e;
+  --color-text-placeholder: rgba(192,197,206,0.38);
 
-    h1 {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
+  --color-accent:           #8fa1b3;
+  --color-success:          #a3be8c;
+  --color-danger:           #bf616a;
+  --color-danger-bg:        rgba(191,97,106,0.15);
 
-    .form-group {
-      margin-bottom: 16px;
-    }
+  --color-btn-bg:           rgba(79,91,102,0.5);
+  --color-btn-bg-hover:     rgba(79,91,102,0.75);
+  --color-btn-primary:      #a7adba;
 
-    label {
-      display: block;
-      font-size: 11px;
-      font-weight: 500;
-      color: #666;
-      margin-bottom: 6px;
-    }
+  --color-type-boolean:     #ebcb8b;
+  --color-type-text:        #88c0d0;
+  --color-type-instance:    #b48ead;
+  --color-type-variant:     #a3be8c;
 
-    input {
-      width: 100%;
-      padding: 10px 12px;
-      font-size: 12px;
-      border: 1px solid #e5e5e5;
-      border-radius: 6px;
-      background: #fafafa;
-      transition: border-color 0.15s ease, background 0.15s ease;
-    }
+  --font: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+  --font-size-xs: 10px;
+  --font-size-sm: 11px;
+  --font-size-base: 12px;
 
-    input:focus {
-      outline: none;
-      border-color: #333;
-      background: #fff;
-    }
+  --space-xs: 4px;
+  --space-sm: 6px;
+  --space-md: 8px;
+  --space-lg: 12px;
+  --space-xl: 16px;
 
-    .results {
-      flex: 1;
-      background: #fafafa;
-      border: 1px solid #e5e5e5;
-      border-radius: 6px;
-      padding: 12px;
-      overflow-y: auto;
-      margin-bottom: 12px;
-    }
+  --control-height: 30px;
+  --radius: 3px;
+  --transition: 100ms ease;
+}
 
-    .results h2 {
-      font-size: 11px;
-      font-weight: 600;
-      color: #666;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
+*, html { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .status {
-      font-size: 11px;
-      color: #666;
-      margin-bottom: 8px;
-    }
+body {
+  font-family: var(--font);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  background: var(--color-surface);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 
-    .status.error {
-      color: #d32f2f;
-    }
+/* ── Header ────────────────────────────────────────────────── */
 
-    .match-list {
-      list-style: none;
-      font-family: 'SF Mono', Monaco, monospace;
-      font-size: 11px;
-    }
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xl) var(--space-xl) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
 
-    .match-list li {
-      padding: 4px 0;
-      border-bottom: 1px solid #e5e5e5;
-    }
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
 
-    .match-list li:last-child {
-      border-bottom: none;
-    }
+.logo {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
 
-    .actions {
-      display: flex;
-      gap: 8px;
-    }
+h1 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-strong);
+  letter-spacing: -0.01em;
+}
 
-    button {
-      flex: 1;
-      padding: 10px 16px;
-      font-size: 12px;
-      font-weight: 500;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.15s ease;
-    }
+.badge {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-bg);
+  background: var(--color-accent);
+  padding: 1px 6px;
+  border-radius: 10px;
+  display: none;
+}
 
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+.badge.visible { display: inline-block; }
 
-    .btn-primary {
-      background: #333;
-      color: #fff;
-    }
+/* ── Form ──────────────────────────────────────────────────── */
 
-    .btn-primary:hover:not(:disabled) {
-      background: #000;
-    }
+.form-area {
+  padding: var(--space-xl);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
 
-    .btn-secondary {
-      background: #f0f0f0;
-      color: #333;
-    }
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
 
-    .btn-secondary:hover:not(:disabled) {
-      background: #e5e5e5;
-    }
-  </style>
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+label {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+input[type="text"] {
+  height: var(--control-height);
+  padding: 0 var(--space-lg);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-strong);
+  background: var(--color-bg);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  transition: border-color var(--transition);
+  width: 100%;
+}
+
+input[type="text"]::placeholder {
+  color: var(--color-text-placeholder);
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+}
+
+/* ── Results ───────────────────────────────────────────────── */
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-xl) var(--space-sm);
+  flex-shrink: 0;
+}
+
+.results-label {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.select-all-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.select-all-row input[type="checkbox"] {
+  width: auto;
+  height: auto;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.results-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--space-xl) var(--space-md);
+}
+
+.results-area::-webkit-scrollbar {
+  width: 4px;
+}
+
+.results-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.results-area::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 2px;
+}
+
+/* Empty / loading state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: var(--space-md);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+  padding: var(--space-xl);
+}
+
+.empty-icon {
+  opacity: 0.3;
+}
+
+/* Result rows */
+.result-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--transition);
+  user-select: none;
+}
+
+.result-item:hover {
+  background: var(--color-surface-alt);
+}
+
+.result-item input[type="checkbox"] {
+  width: auto;
+  height: auto;
+  accent-color: var(--color-accent);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.result-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.result-prop {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-strong);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-prop .match-highlight {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.result-component {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.type-badge {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.type-BOOLEAN  { color: var(--color-type-boolean); background: rgba(235,203,139,0.12); }
+.type-TEXT     { color: var(--color-type-text);    background: rgba(136,192,208,0.12); }
+.type-INSTANCE_SWAP { color: var(--color-type-instance); background: rgba(180,142,173,0.12); }
+.type-VARIANT  { color: var(--color-type-variant); background: rgba(163,190,140,0.12); }
+
+/* ── Status bar ────────────────────────────────────────────── */
+
+.status-bar {
+  padding: var(--space-sm) var(--space-xl);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+  flex-shrink: 0;
+  min-height: 22px;
+}
+
+.status-bar.error   { color: var(--color-danger); }
+.status-bar.success { color: var(--color-success); }
+
+/* ── Actions ───────────────────────────────────────────────── */
+
+.actions {
+  display: flex;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-xl) var(--space-xl);
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  height: var(--control-height);
+  padding: 0 var(--space-lg);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  background: var(--color-btn-bg);
+  color: var(--color-text);
+  transition: background var(--transition);
+  flex: 1;
+}
+
+button:hover:not(:disabled) { background: var(--color-btn-bg-hover); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--color-btn-primary);
+  color: var(--color-bg);
+  font-weight: 500;
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(1.05);
+  background: var(--color-btn-primary);
+}
+
+button svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  stroke: currentColor;
+}
+
+/* ── Divider ───────────────────────────────────────────────── */
+
+.section-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 0;
+  flex-shrink: 0;
+}
+</style>
 </head>
 <body>
-  <div class="header">
+
+<!-- Header -->
+<div class="header">
+  <div class="header-title">
+    <svg class="logo" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="20" height="20" rx="4" fill="#343d46"/>
+      <path d="M4 6h5v2H4V6zM4 9h12v2H4V9zM4 12h8v2H4v-2z" fill="#8fa1b3"/>
+      <path d="M14 5l3 3-3 3" stroke="#a3be8c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
     <h1>Heavy Props Renamer</h1>
   </div>
+  <span class="badge" id="result-badge">0</span>
+</div>
 
-  <div class="form-group">
-    <label for="search">Search for prop name</label>
-    <input id="search" type="text" placeholder="e.g., isActive" autofocus>
+<!-- Form -->
+<div class="form-area">
+  <div class="field-row">
+    <div class="field">
+      <label for="search-input">Find</label>
+      <input
+        id="search-input"
+        type="text"
+        placeholder="property name…"
+        autocomplete="off"
+        spellcheck="false"
+        autofocus
+      >
+    </div>
+    <div class="field">
+      <label for="replace-input">Replace With</label>
+      <input
+        id="replace-input"
+        type="text"
+        placeholder="new name…"
+        autocomplete="off"
+        spellcheck="false"
+      >
+    </div>
   </div>
+</div>
 
-  <div class="results">
-    <h2>Results</h2>
-    <p class="status" id="status">Waiting for input...</p>
-    <ul class="match-list" id="match-list"></ul>
+<!-- Results header -->
+<div class="results-header" id="results-header" style="display:none">
+  <span class="results-label">Results</span>
+  <label class="select-all-row">
+    <input type="checkbox" id="select-all" checked>
+    Select all
+  </label>
+</div>
+
+<!-- Results list -->
+<div class="results-area" id="results-area">
+  <div class="empty-state" id="empty-state">
+    <svg class="empty-icon" width="32" height="32" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="m21 21-4.35-4.35"/>
+    </svg>
+    <span>Search component properties across all<br>components in this file.</span>
   </div>
+</div>
 
-  <div class="actions">
-    <button class="btn-secondary" id="cancel">Cancel</button>
-    <button class="btn-primary" id="search-btn">Search Props</button>
-  </div>
+<!-- Status bar -->
+<div class="status-bar" id="status-bar"></div>
 
-  <script>
-    const searchInput = document.getElementById('search');
-    const searchBtn = document.getElementById('search-btn');
-    const cancelBtn = document.getElementById('cancel');
-    const status = document.getElementById('status');
-    const matchList = document.getElementById('match-list');
+<!-- Actions -->
+<div class="actions">
+  <button id="btn-cancel">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6 6 18M6 6l12 12"/>
+    </svg>
+    Close
+  </button>
+  <button id="btn-search" class="btn-primary">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="m21 21-4.35-4.35"/>
+    </svg>
+    Search
+  </button>
+  <button id="btn-rename" class="btn-primary" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+    </svg>
+    Rename
+  </button>
+</div>
 
-    function search() {
-      const query = searchInput.value.trim();
+<script>
+  // ── Elements ─────────────────────────────────────────────────────────────
+  const searchInput   = document.getElementById('search-input');
+  const replaceInput  = document.getElementById('replace-input');
+  const btnSearch     = document.getElementById('btn-search');
+  const btnRename     = document.getElementById('btn-rename');
+  const btnCancel     = document.getElementById('btn-cancel');
+  const resultsArea   = document.getElementById('results-area');
+  const emptyState    = document.getElementById('empty-state');
+  const resultsHeader = document.getElementById('results-header');
+  const statusBar     = document.getElementById('status-bar');
+  const resultBadge   = document.getElementById('result-badge');
+  const selectAllCb   = document.getElementById('select-all');
 
-      if (!query) {
-        status.textContent = 'Please enter a prop name to search.';
-        status.classList.add('error');
-        return;
-      }
+  // ── State ─────────────────────────────────────────────────────────────────
+  let currentResults = [];
+  let lastQuery      = '';
 
-      status.textContent = 'Searching...';
-      status.classList.remove('error');
-      matchList.innerHTML = '';
+  // ── Helpers ───────────────────────────────────────────────────────────────
 
-      parent.postMessage({
-        pluginMessage: {
-          type: 'search-props',
-          query: query.toLowerCase()
-        }
-      }, '*');
+  function setStatus(msg, type = '') {
+    statusBar.textContent = msg;
+    statusBar.className = 'status-bar' + (type ? ' ' + type : '');
+  }
+
+  function clearStatus() {
+    statusBar.textContent = '';
+    statusBar.className = 'status-bar';
+  }
+
+  function typeLabel(t) {
+    const map = {
+      BOOLEAN: 'BOOL',
+      TEXT: 'TEXT',
+      INSTANCE_SWAP: 'INST',
+      VARIANT: 'VAR',
+    };
+    return map[t] || t;
+  }
+
+  function highlightMatch(text, query) {
+    if (!query) return escHtml(text);
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return escHtml(text);
+    return (
+      escHtml(text.slice(0, idx)) +
+      '<span class="match-highlight">' +
+      escHtml(text.slice(idx, idx + query.length)) +
+      '</span>' +
+      escHtml(text.slice(idx + query.length))
+    );
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function getChecked() {
+    return Array.from(
+      resultsArea.querySelectorAll('input.row-cb:checked')
+    ).map(cb => cb.dataset.idx);
+  }
+
+  function updateRenameBtn() {
+    const checked = getChecked();
+    btnRename.disabled = checked.length === 0 || !replaceInput.value.trim();
+  }
+
+  // ── Render results ────────────────────────────────────────────────────────
+
+  function renderResults(results, query) {
+    currentResults = results;
+    lastQuery = query;
+
+    // Clear previous
+    const old = resultsArea.querySelectorAll('.result-item');
+    old.forEach(el => el.remove());
+
+    if (results.length === 0) {
+      emptyState.style.display = 'flex';
+      emptyState.querySelector('span').innerHTML =
+        `No properties matching <strong style="color:var(--color-text)">${escHtml(query)}</strong> found.`;
+      resultsHeader.style.display = 'none';
+      resultBadge.textContent = '0';
+      resultBadge.classList.remove('visible');
+      setStatus(`No matches for "${query}"`, 'error');
+      btnRename.disabled = true;
+      return;
     }
 
-    // Handle messages from plugin code
-    window.onmessage = (event) => {
-      const msg = event.data.pluginMessage;
+    emptyState.style.display = 'none';
+    resultsHeader.style.display = 'flex';
+    selectAllCb.checked = true;
 
-      if (msg?.type === 'search-results') {
-        status.textContent = `${msg.results.length} match(es) found.`;
-        status.classList.remove('error');
-        matchList.innerHTML = '';
+    resultBadge.textContent = results.length;
+    resultBadge.classList.add('visible');
+    setStatus(`${results.length} match${results.length === 1 ? '' : 'es'} found`);
 
-        for (const match of msg.results) {
-          const li = document.createElement('li');
-          li.textContent = `${match.propName} — ${match.componentName}`;
-          matchList.appendChild(li);
-        }
-      }
+    for (let i = 0; i < results.length; i++) {
+      const r = results[i];
+      const item = document.createElement('div');
+      item.className = 'result-item';
 
-      if (msg?.type === 'error') {
-        status.textContent = msg.message;
-        status.classList.add('error');
-      }
-    };
+      item.innerHTML = `
+        <input type="checkbox" class="row-cb" data-idx="${i}" checked>
+        <div class="result-body">
+          <div class="result-prop">${highlightMatch(r.displayName, query)}</div>
+          <div class="result-component">${escHtml(r.componentName)}</div>
+        </div>
+        <span class="type-badge type-${r.propType}">${typeLabel(r.propType)}</span>
+      `;
 
-    // Listen for Enter key
-    searchInput.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        search();
-      }
+      // Click row to toggle
+      item.addEventListener('click', (e) => {
+        if (e.target.type === 'checkbox') return;
+        const cb = item.querySelector('.row-cb');
+        cb.checked = !cb.checked;
+        syncSelectAll();
+        updateRenameBtn();
+      });
+
+      item.querySelector('.row-cb').addEventListener('change', () => {
+        syncSelectAll();
+        updateRenameBtn();
+      });
+
+      resultsArea.appendChild(item);
+    }
+
+    updateRenameBtn();
+  }
+
+  function syncSelectAll() {
+    const all = resultsArea.querySelectorAll('input.row-cb');
+    const checked = resultsArea.querySelectorAll('input.row-cb:checked');
+    selectAllCb.indeterminate = checked.length > 0 && checked.length < all.length;
+    selectAllCb.checked = checked.length === all.length;
+  }
+
+  // ── Select all ────────────────────────────────────────────────────────────
+
+  selectAllCb.addEventListener('change', () => {
+    resultsArea.querySelectorAll('input.row-cb').forEach(cb => {
+      cb.checked = selectAllCb.checked;
+    });
+    updateRenameBtn();
+  });
+
+  // ── Search ────────────────────────────────────────────────────────────────
+
+  function doSearch() {
+    const q = searchInput.value.trim();
+    if (!q) {
+      setStatus('Enter a search term.', 'error');
+      return;
+    }
+    setStatus('Searching…');
+    btnSearch.disabled = true;
+    btnRename.disabled = true;
+    parent.postMessage({ pluginMessage: { type: 'search-props', query: q } }, '*');
+  }
+
+  btnSearch.addEventListener('click', doSearch);
+
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
+  });
+
+  replaceInput.addEventListener('input', updateRenameBtn);
+
+  // ── Rename ────────────────────────────────────────────────────────────────
+
+  btnRename.addEventListener('click', () => {
+    const replaceVal = replaceInput.value.trim();
+    if (!replaceVal) {
+      setStatus('Enter a replacement name.', 'error');
+      replaceInput.focus();
+      return;
+    }
+
+    const checkedIdxs = getChecked();
+    if (checkedIdxs.length === 0) {
+      setStatus('Select at least one property to rename.', 'error');
+      return;
+    }
+
+    const renames = checkedIdxs.map(idx => {
+      const r = currentResults[parseInt(idx)];
+      // Replace the search match within the property name (case-preserving if possible)
+      const newDisplayName = r.displayName.replace(
+        new RegExp(escRegex(lastQuery), 'gi'),
+        replaceVal
+      );
+      return {
+        nodeId: r.nodeId,
+        propKey: r.propKey,
+        newName: newDisplayName,
+      };
     });
 
-    searchBtn.addEventListener('click', search);
+    setStatus(`Renaming ${renames.length} propert${renames.length === 1 ? 'y' : 'ies'}…`);
+    btnRename.disabled = true;
+    btnSearch.disabled = true;
 
-    cancelBtn.addEventListener('click', () => {
-      parent.postMessage({ pluginMessage: { type: 'close' } }, '*');
-    });
-  </script>
+    parent.postMessage({ pluginMessage: { type: 'rename-props', renames } }, '*');
+  });
+
+  function escRegex(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  // ── Cancel ────────────────────────────────────────────────────────────────
+
+  btnCancel.addEventListener('click', () => {
+    parent.postMessage({ pluginMessage: { type: 'close' } }, '*');
+  });
+
+  // ── Plugin messages ───────────────────────────────────────────────────────
+
+  window.onmessage = (event) => {
+    const msg = event.data.pluginMessage;
+    if (!msg) return;
+
+    if (msg.type === 'search-results') {
+      btnSearch.disabled = false;
+      renderResults(msg.results, msg.query || '');
+    }
+
+    if (msg.type === 'rename-complete') {
+      btnSearch.disabled = false;
+      const { successCount, errorCount } = msg;
+
+      if (successCount > 0) {
+        setStatus(
+          `✓ Renamed ${successCount} propert${successCount === 1 ? 'y' : 'ies'}` +
+          (errorCount > 0 ? ` · ${errorCount} failed` : ''),
+          'success'
+        );
+        // Re-run search to refresh results with new names
+        setTimeout(() => doSearch(), 600);
+      } else {
+        setStatus(`Rename failed: ${msg.errors?.[0] || 'Unknown error'}`, 'error');
+        updateRenameBtn();
+      }
+    }
+
+    if (msg.type === 'error') {
+      btnSearch.disabled = false;
+      btnRename.disabled = false;
+      setStatus(msg.message, 'error');
+    }
+  };
+</script>
 </body>
 </html>
